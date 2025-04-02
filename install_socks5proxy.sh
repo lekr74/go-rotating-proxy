@@ -73,3 +73,22 @@ echo ""
 echo "✅ Installation terminée avec succès !"
 echo "➡️ Le proxy tourne en tant que service : systemctl status ${SERVICE_NAME}"
 echo "➡️ Fichiers de config attendus : ${APP_DIR}/users.yaml & subnets.json"
+
+# 10. Configuration sysctl
+echo "🧩 Vérification de net.ipv6.ip_nonlocal_bind..."
+
+# Vérifie si déjà actif
+if sysctl net.ipv6.ip_nonlocal_bind | grep -q '1'; then
+    echo "✅ net.ipv6.ip_nonlocal_bind est déjà activé"
+else
+    echo "⚙️  Activation temporaire de net.ipv6.ip_nonlocal_bind"
+    sudo sysctl -w net.ipv6.ip_nonlocal_bind=1
+fi
+
+# Vérifie si déjà présent dans /etc/sysctl.conf
+if grep -q '^net.ipv6.ip_nonlocal_bind=1' /etc/sysctl.conf; then
+    echo "✅ Déjà présent dans /etc/sysctl.conf"
+else
+    echo "🔧 Ajout dans /etc/sysctl.conf pour persistance"
+    echo 'net.ipv6.ip_nonlocal_bind=1' | sudo tee -a /etc/sysctl.conf
+fi
