@@ -20,7 +20,7 @@ Compatible avec l'authentification utilisateur et conçu pour gérer efficacemen
 - **Go 1.22 ou supérieur**
 - Système Linux avec support IPv6 complet
 - Droits `sudo` pour ajouter des routes au démarrage
-- - Activation de l'option `net.ipv6.ip_nonlocal_bind=1` dans `sysctl`
+- Activation de l'option `net.ipv6.ip_nonlocal_bind=1` dans `sysctl`
 
 ---
 
