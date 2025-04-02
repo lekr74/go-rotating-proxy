@@ -121,6 +121,38 @@ Au démarrage, le proxy :
 
 ---
 
+## ⚡ Installation automatisée (recommandée)
+
+Tu peux installer le proxy et tout son environnement automatiquement avec ce script :
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/lekr74/go-rotating-proxy/refs/heads/main/install_socks5proxy.sh | bash
+```
+
+> 🔒 **Remarque** : le script requiert `sudo` pour :
+> - Installer Go dans `/usr/local`
+> - Ajouter des routes IPv6 locales
+> - Créer un service `systemd`
+> - Activer `net.ipv6.ip_nonlocal_bind=1`
+
+---
+
+📦 Le script fait tout pour toi :
+- Télécharge et installe Go 1.24.2
+- Clone ce repo dans `/opt/socks5proxy`
+- Installe les dépendances Go (`fsnotify`, etc.)
+- Compile le binaire
+- Crée le service `systemd`
+- Active les options réseau nécessaires
+
+---
+
+💡 Une fois installé :
+- Place tes fichiers `users.yaml` et `subnets.json` dans `/opt/socks5proxy`
+- Le proxy démarre automatiquement au boot
+
+--- 
+
 ## 🔐 Sécurité
 
 Ce proxy **ne doit pas être exposé publiquement** sans contrôle d'accès (auth SOCKS5 activée par défaut).  
