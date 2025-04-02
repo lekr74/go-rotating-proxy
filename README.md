@@ -29,9 +29,9 @@ Compatible avec l'authentification utilisateur et conçu pour gérer efficacemen
 
 ```bash
 cd /tmp
-curl -LO https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
+curl -LO https://go.dev/dl/go1.24.2.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.22.2.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz
 echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
 source ~/.bashrc
 ```
@@ -50,6 +50,7 @@ go version
 git clone https://github.com/<ton-utilisateur>/socks5proxy.git
 cd socks5proxy
 go mod tidy
+go get github.com/fsnotify/fsnotify
 ```
 
 ---
