@@ -47,7 +47,7 @@ go version
 ### 2. Cloner le repo et installer les dépendances
 
 ```bash
-git clone https://github.com/<ton-utilisateur>/socks5proxy.git
+git clone https://github.com/lekr74/go-rotating-proxy.git
 cd socks5proxy
 go mod tidy
 go get github.com/fsnotify/fsnotify
