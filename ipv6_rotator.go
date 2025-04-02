@@ -8,6 +8,8 @@ import (
 	"net"
 	"os"
 	"time"
+	"log"
+	"sync"
 )
 
 type SubnetConfig struct {
@@ -15,7 +17,8 @@ type SubnetConfig struct {
 }
 
 type IPv6Rotator struct {
-	parsed []*net.IPNet
+	subnets []*net.IPNet
+	mu      sync.Mutex
 }
 
 func LoadIPv6Subnets(filename string) (*SubnetConfig, error) {
@@ -46,12 +49,27 @@ func NewIPv6Rotator(subnets []string) (*IPv6Rotator, error) {
 	if len(parsed) == 0 {
 		return nil, fmt.Errorf("aucun bloc IPv6 valide trouvé")
 	}
-	return &IPv6Rotator{parsed: parsed}, nil
+	return &IPv6Rotator{subnets: parsed}, nil
+}
+func (r *IPv6Rotator) UpdateSubnets(subnets []string) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	var parsed []*net.IPNet
+	for _, s := range subnets {
+		_, ipnet, err := net.ParseCIDR(s)
+		if err != nil {
+			log.Printf("Erreur parsing subnet %s: %v", s, err)
+			continue
+		}
+		parsed = append(parsed, ipnet)
+	}
+	r.subnets = parsed
 }
 
 func (r *IPv6Rotator) RandomIPv6() net.IP {
 	rand.Seed(time.Now().UnixNano())
-	block := r.parsed[rand.Intn(len(r.parsed))]
+	block := r.subnets[rand.Intn(len(r.subnets))]
 
 	base := block.IP
 	prefixLen, _ := block.Mask.Size()
