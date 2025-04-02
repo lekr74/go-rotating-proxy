@@ -1,0 +1,13 @@
+[Unit]
+Description=SOCKS5 Proxy avec rotation IPv6
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/socks5proxy
+WorkingDirectory=/opt/socks5proxy
+Restart=always
+User=root
+Environment=PATH=/usr/local/go/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=multi-user.target
