@@ -20,8 +20,22 @@ Compatible avec l'authentification utilisateur et conçu pour gérer efficacemen
 - **Go 1.22 ou supérieur**
 - Système Linux avec support IPv6 complet
 - Droits `sudo` pour ajouter des routes au démarrage
+- - Activation de l'option `net.ipv6.ip_nonlocal_bind=1` dans `sysctl`
 
 ---
+
+## 🔒 Configuration système requise
+
+Pour que le proxy puisse binder des adresses IPv6 non assignées à l'interface, il faut activer :
+```bash
+sudo sysctl -w net.ipv6.ip_nonlocal_bind=1
+```
+Pour le rendre permanent : 
+```bash
+echo 'net.ipv6.ip_nonlocal_bind=1' | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
+
 
 ## 📦 Installation
 
