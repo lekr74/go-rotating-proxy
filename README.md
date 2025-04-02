@@ -1,3 +1,7 @@
+[![Install SOCKS5 Proxy](https://img.shields.io/badge/Install%20proxy-curl%20%7C%20bash-blueviolet?style=for-the-badge&logo=go)](https://raw.githubusercontent.com/lekr74/go-rotating-proxy/refs/heads/main/install_socks5proxy.sh)
+[![Go Version](https://img.shields.io/badge/Go-1.24%2B-00ADD8?style=for-the-badge&logo=go)](https://go.dev/dl/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
 # socks5proxy
 
 Un proxy SOCKS5 en Go avec rotation d'adresses IPv6 aléatoires à partir de blocs multiples non contigus.  
