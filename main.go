@@ -65,7 +65,7 @@ func main() {
 		log.Fatalf("Erreur de chargement des subnets IPv6: %v", err)
 	}
 
-	rotator, err := NewIPv6Rotator(subnetConfig.Subnets)
+	rotator, err := NewIPv6Rotator(subnetConfig.Subnets, 50) // rotation toutes les 50 connexions
 	if err != nil {
 		log.Fatalf("Erreur d'initialisation du rotator IPv6: %v", err)
 	}
