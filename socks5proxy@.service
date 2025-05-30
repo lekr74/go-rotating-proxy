@@ -1,0 +1,17 @@
+[Unit]
+Description=SOCKS5 Proxy avec rotation IPv6 (instance %i)
+After=network.target
+
+[Service]
+ExecStart=/opt/socks5proxy/socks5proxy
+WorkingDirectory=/opt/socks5proxy
+Restart=always
+User=root
+Environment=PATH=/usr/local/go/bin:/usr/bin:/bin
+
+# Limites système pour haute performance
+LimitNOFILE=1048576
+LimitNPROC=65535
+
+[Install]
+WantedBy=multi-user.target
