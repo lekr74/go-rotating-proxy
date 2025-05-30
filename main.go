@@ -6,9 +6,12 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 	"os/exec"
+	"os/signal"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/armon/go-socks5"
@@ -65,7 +68,7 @@ func main() {
 		log.Fatalf("Erreur de chargement des subnets IPv6: %v", err)
 	}
 
-	rotator, err := NewIPv6Rotator(subnetConfig.Subnets, 50) // rotation toutes les 50 connexions
+	rotator, err := NewIPv6Rotator(subnetConfig.Subnets, 10000) // rotation toutes les 1000 connexions
 	if err != nil {
 		log.Fatalf("Erreur d'initialisation du rotator IPv6: %v", err)
 	}
@@ -114,10 +117,24 @@ func main() {
 	addr := "[::]:1080"
 	fmt.Printf("Proxy SOCKS5 lancé sur %s\n", addr)
 
-	err = server.ListenAndServe("tcp", addr)
+	ln, err := reusePortListen("tcp", addr)
 	if err != nil {
-		log.Fatalf("Erreur de démarrage du serveur: %v", err)
+		log.Fatalf("Erreur lors de l'écoute TCP avec SO_REUSEPORT: %v", err)
 	}
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	go func() {
+		err = server.Serve(ln)
+		if err != nil && err != context.Canceled {
+			log.Fatalf("Erreur lors du démarrage du serveur SOCKS5: %v", err)
+		}
+	}()
+
+	<-ctx.Done()
+	log.Println("Arrêt demandé, fermeture du proxy...")
+	ln.Close()
 }
 
 func ApplyLocalRoutes(subnets []string, iface string) error {
@@ -217,4 +234,23 @@ func watchUsers(creds *DynamicCredentials, path string) {
 			log.Printf("Erreur watcher utilisateurs: %v", err)
 		}
 	}
+}
+
+
+func reusePortListen(network, address string) (net.Listener, error) {
+	lc := net.ListenConfig{
+		Control: func(_, _ string, c syscall.RawConn) error {
+			var serr error
+			c.Control(func(fd uintptr) {
+				serr = syscall.SetsockoptInt(int(fd), syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1)
+				if serr != nil {
+					return
+				}
+				// 0x0F = SO_REUSEPORT
+				serr = syscall.SetsockoptInt(int(fd), syscall.SOL_SOCKET, 0x0F, 1)
+			})
+			return serr
+		},
+	}
+	return lc.Listen(context.Background(), network, address)
 }
