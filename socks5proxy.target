@@ -1,0 +1,7 @@
+[Unit]
+Description=Groupement des instances SOCKS5 proxy
+Requires=socks5proxy@1.service socks5proxy@2.service socks5proxy@3.service socks5proxy@4.service socks5proxy@5.service socks5proxy@6.service socks5proxy@7.service socks5proxy@8.service socks5proxy@9.service socks5proxy@10.service socks5proxy@11.service socks5proxy@12.service
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
